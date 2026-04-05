@@ -1,6 +1,7 @@
 import { formatCurrency, formatDate } from "../utils/format";
+import Button from "../ui/button";
 
-export default function TransactionRow({ transaction }) {
+export default function TransactionRow({ transaction, isAdmin, onEdit, onDelete }) {
     const isIncome = transaction.type === "income";
 
     return (
@@ -18,6 +19,21 @@ export default function TransactionRow({ transaction }) {
                 >
                     {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
                 </span>
+            </td>
+
+            <td className="px-4 py-3 text-sm text-slate-700">
+                {isAdmin ? (
+                    <div className="flex items-center gap-2">
+                        <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => onEdit(transaction.id)}>
+                            Edit
+                        </Button>
+                        <Button variant="danger" className="px-2 py-1 text-xs" onClick={() => onDelete(transaction.id)}>
+                            Delete
+                        </Button>
+                    </div>
+                ) : (
+                    <span className="text-xs text-slate-400">Viewer mode</span>
+                )}
             </td>
         </tr>
     );

@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { STORAGE_KEYS } from "../constants/defoultdata";
 import { loadDashboardData } from "../services/dataloader";
+import { fetchGoogleSheetData } from "../services/googlesheet";
 import useFinanceStore from "../store/usestore";
 import CSVUpload from "../transcations/csvupload";
 import Button from "../ui/button";
@@ -22,12 +23,21 @@ export default function AdminPanel() {
             return;
         }
 
-        localStorage.setItem(STORAGE_KEYS.SHEET_URL, sheetUrl);
-        localStorage.removeItem(STORAGE_KEYS.CSV_DATA);
+        try {
+            const sheetTransactions = await fetchGoogleSheetData(sheetUrl);
 
-        const nextData = await loadDashboardData();
-        setInitialData(nextData);
-        setStatus("Google Sheet URL saved and data loaded.");
+            localStorage.setItem(STORAGE_KEYS.SHEET_URL, sheetUrl);
+            localStorage.removeItem(STORAGE_KEYS.CSV_DATA);
+
+            setInitialData({
+                transactions: sheetTransactions,
+                source: "google-sheet",
+                sheetUrl,
+            });
+            setStatus("Google Sheet URL saved and CSV data loaded.");
+        } catch (error) {
+            setStatus(error?.message || "Unable to load data from this link. Use a valid CSV URL.");
+        }
     };
 
     const handleReset = async () => {
@@ -50,6 +60,9 @@ export default function AdminPanel() {
                         value={sheetUrl}
                         onChange={(event) => setSheetUrl(event.target.value)}
                     />
+                    <p className="text-xs text-slate-500">
+                        Note: PDF and Drive preview links are not supported. Use a direct CSV export URL.
+                    </p>
 
                     <div className="flex flex-wrap gap-2">
                         <Button onClick={handleSaveLink}>Save Sheet URL</Button>

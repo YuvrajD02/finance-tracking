@@ -8,8 +8,16 @@ import { formatCurrency } from "../../utils/format";
 const COLORS = ["#f59e0b", "#4f46e5", "#ef4444", "#06b6d4", "#8b5cf6", "#3b82f6"];
 
 export default function CategoryPieChart({ data }) {
+    if (!data?.length) {
+        return (
+            <Card title="Category Breakdown" subtitle="No expense categories available" className="h-[340px]">
+                <div className="grid h-full place-items-center text-sm text-slate-500">No chart data</div>
+            </Card>
+        );
+    }
+
     return (
-        <Card title="Traffic" subtitle="Expense category split" className="h-[340px]">
+        <Card title="Category Breakdown" subtitle="Category-wise expense split" className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie

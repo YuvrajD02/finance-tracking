@@ -12,4 +12,10 @@ export const DEFAULT_TRANSACTIONS = [
 export const STORAGE_KEYS = {
     CSV_DATA: "csvData",
     SHEET_URL: "sheetURL",
+    ROLE: "dashboardRole",
+    DARK_MODE: "dashboardDarkMode",
 };
+
+export const DEFAULT_ROLE = (process.env.NEXT_PUBLIC_DEFAULT_ROLE || "viewer").toLowerCase() === "admin"
+    ? "admin"
+    : "viewer";

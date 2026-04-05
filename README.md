@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Finance Dashboard
 
-## Getting Started
+A responsive finance analytics dashboard built with Next.js App Router, Tailwind CSS, Zustand, and Recharts.
 
-First, run the development server:
+## Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project tracks financial transactions and provides:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Dynamic financial summary cards (balance, income, expenses)
+- Interactive transaction management (search/filter/sort/edit/delete)
+- Role-based capabilities (Viewer/Admin)
+- Analytics insights and visual charts
+- Multi-source data loading with priority:
+	1. CSV upload (localStorage)
+	2. Google Sheet CSV URL
+	3. Default fallback data
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Dashboard Overview
 
-## Learn More
+- `Total Balance`, `Total Income`, `Total Expenses`
+- Dynamic values computed from transaction data
+- Month-over-month percentage indicators
+- Proper USD currency formatting
 
-To learn more about Next.js, take a look at the following resources:
+### Transactions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Table columns: `Date`, `Amount`, `Category`, `Type`, `Actions`
+- Search by category/type/date/keyword
+- Filter by type (`All`, `Income`, `Expense`)
+- Sort by date or amount (ascending/descending)
+- Empty state for no data and no filter matches
+- Admin-only edit/delete actions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Role-Based UI
 
-## Deploy on Vercel
+- Role switcher in navbar (`Viewer` / `Admin`)
+- Viewer: read-only access
+- Admin: add/edit/delete transactions + manage data source
+- `+ Add Transaction` shown only for Admin
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Insights
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Highest spending category
+- Monthly expense comparison (%)
+- Savings percentage
+- Smart insight messages (behavioral spending hints)
+
+### Charts
+
+- Balance trend line/area chart based on real transactions
+- Category-wise expense pie chart based on real transactions
+- Tooltip support and empty-data states
+
+### State Management
+
+Managed with Zustand:
+
+- Transactions + source metadata
+- Role and UI preferences
+- Search/filter/sort state
+- Sidebar visibility and add/edit form state
+
+### UI/UX & Responsiveness
+
+- Modern card-based layout and hover interactions
+- Mobile collapsible sidebar with overlay
+- Horizontally scrollable transaction table on small screens
+- Loading and empty states for key sections
+
+### Optional Enhancements Included
+
+- Dark mode toggle (basic)
+- localStorage persistence for role, dark mode, and CSV transaction overrides
+- Smooth interaction transitions
+
+## Tech Stack
+
+- **Next.js** (App Router)
+- **React**
+- **Tailwind CSS**
+- **Zustand**
+- **Recharts**
+
+## Setup Instructions
+
+1. Install dependencies:
+
+	 npm install
+
+2. Configure environment in `.env.local`:
+
+	 NEXT_PUBLIC_SHEET_URL=https://docs.google.com/spreadsheets/d/YOUR_ID/export?format=csv
+	 NEXT_PUBLIC_APP_NAME=Finance Dashboard
+	 NEXT_PUBLIC_DEFAULT_ROLE=viewer
+
+3. Start development server:
+
+	 npm run dev
+
+4. Open:
+
+	 http://localhost:3000
+
+## Role-Based Behavior
+
+- **Viewer**
+	- Can view summaries, charts, insights, and transactions
+	- Cannot add/edit/delete transactions
+	- Cannot access data-source admin tools
+
+- **Admin**
+	- Can add new transactions
+	- Can edit/delete existing transactions
+	- Can manage Google Sheet URL and CSV source controls
+
+## Notes
+
+- The data loader applies strict source priority:
+	`CSV localStorage > Google Sheet URL > Default data`
+- Manual Admin modifications are persisted to local CSV storage to keep state stable across refreshes.

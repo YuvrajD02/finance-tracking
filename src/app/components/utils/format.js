@@ -1,7 +1,7 @@
 export function formatCurrency(value) {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
         maximumFractionDigits: 2,
     }).format(Number(value || 0));
 }
@@ -17,4 +17,10 @@ export function formatDate(value) {
         month: "short",
         day: "2-digit",
     }).format(date);
+}
+
+export function formatPercent(value) {
+    const number = Number(value || 0);
+    const sign = number > 0 ? "+" : "";
+    return `${sign}${number.toFixed(1)}%`;
 }

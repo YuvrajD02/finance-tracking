@@ -15,7 +15,9 @@ export default function HomePage() {
   const transactions = useFinanceStore((state) => state.transactions);
   const loading = useFinanceStore((state) => state.loading);
   const dataSource = useFinanceStore((state) => state.dataSource);
+  const role = useFinanceStore((state) => state.role);
   const setInitialData = useFinanceStore((state) => state.setInitialData);
+  const hydratePreferences = useFinanceStore((state) => state.hydratePreferences);
 
   useEffect(() => {
     let cancelled = false;
@@ -26,11 +28,12 @@ export default function HomePage() {
     }
 
     bootstrapData();
+    hydratePreferences();
 
     return () => {
       cancelled = true;
     };
-  }, [setInitialData]);
+  }, [hydratePreferences, setInitialData]);
 
   if (loading) {
     return (
@@ -55,12 +58,18 @@ export default function HomePage() {
       <SummarySection transactions={transactions} />
       <Insights transactions={transactions} />
 
-      <section id="transactions" className="grid gap-4 xl:grid-cols-[360px_1fr]">
+      <section id="transactions" className="space-y-4">
         <AddTransaction />
         <TransactionTable transactions={transactions} />
       </section>
 
-      <AdminPanel />
+      {role === "admin" ? (
+        <AdminPanel />
+      ) : (
+        <Card title="Admin Panel" subtitle="Switch role to Admin from the top-right role selector to manage sources.">
+          <p className="text-sm text-slate-500">Viewer role has read-only access.</p>
+        </Card>
+      )}
     </div>
   );
 }
